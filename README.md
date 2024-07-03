@@ -5,6 +5,7 @@
 你问什么是NaYo语？这就是NaYo语！
 ![image](https://github.com/SuzukaKing/Tokyo-Hot/assets/121793556/11ef942e-a7a3-4b1f-aeb2-7244663b4079)
 ## 使用方法
+
 python2不支持，要使用python3。脚本编写时python版本3.8.10
 ~~~
 python3 Tokyo-Hot.py

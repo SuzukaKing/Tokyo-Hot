@@ -1,6 +1,6 @@
 #coding=utf-8
 #T0kyo_1s_6ot_o_0.py
-#Author:SuzukaGozen 2024.5.2 Version:1.0  
+#Author:SuzukaGozen 2024.7.3 Version:1.1  
 
 import sys
 import random
@@ -14,10 +14,12 @@ colors = [Fore.LIGHTRED_EX,Fore.LIGHTGREEN_EX,Fore.LIGHTYELLOW_EX,Fore.LIGHTBLUE
 color = random.choice(colors)
 #映射表
 map = {  
-    'NaYo?': '0',  # 'NaYo?' 映射到 '0'  
-    'Ayo!': '1', 
-    'NaYo.':'hello',
-    'Ayo,':'world',  
+    'NaYo?': '00',  # 'NaYo?' 映射到 '00'  
+    'Ayo!': '01', 
+    'NaYo.':'10',
+    'Ayo,':'11',  
+    'NaYo+':'hello',
+    'Ayo-':'world',
 } 
 #反向映射
 re_map = {v: k for k, v in map.items()}  
@@ -30,18 +32,20 @@ def Tokyo_encode(text):
         binary_string = ''.join(format(byte, '08b') for byte in bytes_data)  
         return binary_string
     #映射表替换值，其实是反向映射
-    def encrypt(encrypted_text):
-        for value, key in re_map.items():  
-            encrypted_text = encrypted_text.replace(value, key)  
-        return encrypted_text
+    def encrypt(text):
+        encrypt_str = ''
+        for i in range(0,len(text),2):
+            twobite = text[i:i+2]
+            if twobite in re_map:  
+                encrypt_str += re_map[twobite]  
+        return encrypt_str
     #添加噪声
-    def noisy(str,noise=["Ayo,","NaYo."] ):
+    def noisy(str,noise=["Ayo-","NaYo+"] ):
         new_str= ""
         for char in str:
             new_str += char
-            if char == "?" or char == "!":
-                if random.random()>0.85:
-                    new_str += random.choice(noise)  # 在问号或感叹号后加噪  
+            if not char.isalpha() and random.random()>0.85:
+                new_str += random.choice(noise)  # 在非字母符号后加噪  
         return new_str
     return noisy(encrypt(string_to_binary(text)))
     # return encrypt(string_to_binary(text))
@@ -73,28 +77,28 @@ def Tokyo_decode(text):
     return binary_to_string(decrypt(text))
 
 # str = 'Wow,你发现了Nian留下的彩蛋:...'
-strs = 'NaYo?Ayo!NaYo?Ayo!Ayo,NaYo?Ayo!Ayo!Ayo,Ayo!NaYo?Ayo!Ayo!NaYo?Ayo!Ayo!Ayo!Ayo!NaYo?NaYo.Ayo!Ayo!Ayo!NaYo?Ayo,Ayo!NaYo.Ayo!Ayo!Ayo,NaYo?NaYo?Ayo!Ayo,NaYo?Ayo!Ayo!Ayo,NaYo?NaYo?Ayo!Ayo,Ayo!Ayo!NaYo?NaYo?Ayo!Ayo,NaYo?NaYo?Ayo!NaYo?Ayo!Ayo!Ayo!Ayo!NaYo?Ayo!Ayo!NaYo?Ayo!NaYo?NaYo?NaYo?NaYo?NaYo?Ayo!Ayo!Ayo!Ayo,NaYo?NaYo?NaYo.Ayo!NaYo?Ayo!Ayo,Ayo!NaYo?NaYo.NaYo?NaYo?Ayo!Ayo!Ayo!Ayo!Ayo!NaYo?NaYo?Ayo!NaYo?NaYo?NaYo?Ayo!Ayo!Ayo!Ayo!NaYo?NaYo?Ayo!Ayo!Ayo!Ayo!NaYo?NaYo?Ayo,NaYo?Ayo!Ayo!Ayo,Ayo!NaYo?Ayo!NaYo?Ayo,Ayo!Ayo!NaYo?NaYo?NaYo.NaYo?NaYo?Ayo!Ayo!Ayo!NaYo?NaYo?Ayo!NaYo?NaYo?Ayo!NaYo?Ayo!Ayo!Ayo!NaYo?Ayo!NaYo?Ayo!NaYo?NaYo.NaYo?NaYo?NaYo?Ayo!Ayo!NaYo?NaYo?Ayo!NaYo?NaYo?Ayo!Ayo!NaYo.Ayo!NaYo.NaYo?NaYo?Ayo!Ayo!Ayo,NaYo?Ayo!NaYo?Ayo,NaYo?Ayo!NaYo?Ayo!Ayo!Ayo,NaYo?NaYo?NaYo?NaYo?Ayo!NaYo.NaYo?Ayo!Ayo!NaYo?Ayo!Ayo!NaYo.Ayo!Ayo,NaYo?Ayo!Ayo!Ayo!NaYo?NaYo?Ayo!Ayo!Ayo!Ayo!NaYo?NaYo?Ayo!NaYo?Ayo!NaYo.NaYo?Ayo!NaYo.Ayo!NaYo?NaYo?Ayo!Ayo!NaYo?NaYo?Ayo!NaYo.Ayo!Ayo!Ayo!NaYo?NaYo?Ayo!NaYo?NaYo.NaYo?Ayo!NaYo?Ayo!Ayo!Ayo!NaYo?NaYo?NaYo?Ayo!NaYo?NaYo?NaYo?Ayo!NaYo?NaYo.Ayo!Ayo!Ayo!Ayo!Ayo,Ayo!NaYo?Ayo,NaYo?Ayo!Ayo!Ayo!Ayo!NaYo?NaYo?Ayo,Ayo!Ayo!NaYo?Ayo!NaYo?Ayo!NaYo?NaYo?NaYo?NaYo.NaYo?Ayo!NaYo?NaYo?Ayo!Ayo!Ayo!NaYo?NaYo?Ayo!NaYo?Ayo!Ayo!Ayo,NaYo?Ayo!Ayo!Ayo!Ayo!NaYo?Ayo!NaYo.Ayo!NaYo?Ayo!NaYo?NaYo.Ayo!NaYo?NaYo?Ayo,Ayo!Ayo!Ayo!Ayo!Ayo,NaYo?Ayo!NaYo?NaYo?NaYo?Ayo!Ayo,NaYo?Ayo,NaYo?Ayo!Ayo!NaYo?Ayo!Ayo!Ayo!NaYo?Ayo,NaYo?NaYo?Ayo!NaYo?Ayo!Ayo!NaYo?NaYo?Ayo!Ayo!NaYo.Ayo!NaYo?Ayo!Ayo,NaYo?NaYo.NaYo?Ayo!NaYo?NaYo?Ayo,Ayo!Ayo!Ayo!NaYo?NaYo?Ayo!Ayo!NaYo?Ayo!NaYo?NaYo?Ayo!NaYo?Ayo!NaYo.Ayo!Ayo,NaYo?NaYo?NaYo?NaYo?Ayo,Ayo!NaYo?Ayo!Ayo!Ayo,NaYo?Ayo!Ayo!Ayo,Ayo!NaYo.NaYo?NaYo?Ayo!Ayo!Ayo!Ayo!NaYo?Ayo!Ayo!NaYo?Ayo!NaYo?Ayo!NaYo?Ayo!Ayo,NaYo?NaYo?NaYo?NaYo?Ayo!Ayo!NaYo?NaYo?NaYo?NaYo?NaYo?Ayo,Ayo!Ayo!NaYo?Ayo!NaYo?Ayo!Ayo!NaYo?Ayo!Ayo!Ayo!Ayo!NaYo?NaYo?Ayo!NaYo.NaYo?Ayo!Ayo!NaYo?Ayo!Ayo!Ayo!Ayo!NaYo?Ayo!NaYo?Ayo!Ayo!Ayo,Ayo!Ayo!Ayo!NaYo.NaYo?Ayo,NaYo?Ayo!Ayo!NaYo?NaYo?NaYo?NaYo.Ayo!NaYo?Ayo!Ayo!Ayo!NaYo?NaYo?Ayo!Ayo!NaYo?Ayo!NaYo?Ayo!Ayo!Ayo,Ayo!Ayo!Ayo!NaYo.NaYo?Ayo!Ayo!NaYo?NaYo.Ayo!Ayo!Ayo!NaYo.NaYo?NaYo?NaYo?Ayo!Ayo!NaYo?NaYo?Ayo,NaYo?NaYo?NaYo?Ayo!Ayo!Ayo!NaYo?Ayo!Ayo,NaYo?NaYo?NaYo?Ayo!NaYo?Ayo!Ayo!Ayo!Ayo!Ayo!NaYo?Ayo!Ayo!Ayo!NaYo.NaYo?Ayo,Ayo!NaYo?Ayo,NaYo?NaYo?Ayo!Ayo!NaYo?Ayo!Ayo!Ayo,Ayo!Ayo!NaYo?NaYo?Ayo!Ayo!Ayo,NaYo?NaYo?NaYo?Ayo,NaYo?NaYo?Ayo,Ayo!NaYo?Ayo,Ayo!Ayo!Ayo!Ayo!Ayo!NaYo?NaYo?Ayo!Ayo!NaYo?Ayo!Ayo!NaYo?NaYo.NaYo?Ayo!Ayo!NaYo?Ayo!NaYo.Ayo!Ayo!Ayo!NaYo?Ayo!Ayo!Ayo!NaYo?Ayo,Ayo!NaYo?NaYo?NaYo?NaYo?Ayo!NaYo?NaYo.NaYo?NaYo?NaYo?Ayo!NaYo?Ayo!Ayo!NaYo.Ayo!Ayo!Ayo!NaYo?Ayo!Ayo,' 
+strs = 'Ayo!Ayo!Ayo!Ayo,NaYo+Ayo!NaYo.Ayo,NaYo+Ayo,Ayo!Ayo,Ayo!Ayo-Ayo,NaYo?NaYo.Ayo,Ayo-NaYo?Ayo,Ayo-NaYo.Ayo!NaYo?NaYo.Ayo,Ayo,Ayo!NaYo.Ayo-NaYo.NaYo?NaYo?Ayo,NaYo.Ayo!Ayo!NaYo.NaYo?Ayo,Ayo,NaYo.Ayo!NaYo?Ayo!Ayo,NaYo.NaYo+Ayo!NaYo+Ayo,NaYo.NaYo?Ayo,NaYo.NaYo.Ayo,NaYo+NaYo?NaYo?Ayo,NaYo.Ayo!Ayo-NaYo?NaYo.NaYo+Ayo,NaYo.NaYo.NaYo.NaYo?Ayo!NaYo.NaYo+Ayo!NaYo?Ayo,NaYo.NaYo+Ayo!NaYo.NaYo.Ayo!Ayo!NaYo.NaYo?Ayo!Ayo!Ayo-NaYo.Ayo,NaYo.Ayo,NaYo.Ayo!Ayo,NaYo.Ayo!Ayo!Ayo!NaYo.Ayo!NaYo.Ayo!Ayo,NaYo.Ayo-Ayo!NaYo+NaYo?NaYo.Ayo,NaYo.Ayo-NaYo?NaYo.NaYo?NaYo.Ayo,Ayo,NaYo.Ayo!Ayo,NaYo.Ayo!NaYo.NaYo.NaYo.NaYo?Ayo!NaYo?Ayo,NaYo.Ayo!Ayo!NaYo.Ayo-Ayo,Ayo,Ayo!NaYo.NaYo.NaYo.Ayo!Ayo,NaYo.NaYo.NaYo?NaYo.Ayo!NaYo.Ayo,NaYo.NaYo?NaYo.Ayo-Ayo,NaYo?Ayo,NaYo.NaYo.Ayo!NaYo?Ayo-Ayo,NaYo.Ayo!NaYo.NaYo.Ayo!Ayo!NaYo.NaYo?Ayo!Ayo!NaYo.Ayo,NaYo.Ayo!Ayo,NaYo.Ayo,Ayo!Ayo!Ayo!NaYo?NaYo?Ayo,NaYo?NaYo?Ayo!NaYo.Ayo-NaYo.Ayo,Ayo!Ayo,NaYo.Ayo!NaYo?Ayo,NaYo?NaYo?Ayo!Ayo!Ayo,Ayo,NaYo?Ayo,NaYo+NaYo?Ayo!Ayo!Ayo,NaYo?NaYo+Ayo,Ayo!Ayo!Ayo,Ayo,Ayo!NaYo.Ayo,NaYo.NaYo?Ayo,NaYo?Ayo-NaYo?Ayo!Ayo,Ayo!NaYo?Ayo!Ayo!Ayo,Ayo,Ayo!Ayo,Ayo!NaYo?Ayo!Ayo-NaYo.Ayo,Ayo,NaYo?Ayo,NaYo?NaYo?Ayo!Ayo!Ayo-Ayo,Ayo,Ayo!NaYo.NaYo.NaYo?NaYo?Ayo,NaYo?NaYo?Ayo!Ayo,Ayo!NaYo?NaYo?NaYo+NaYo.NaYo?Ayo!Ayo!Ayo,Ayo,Ayo!' 
 # str1 = '嘻，你知道Nian的数字吗'
-str1 = 'Ayo!Ayo!Ayo!NaYo?NaYo?Ayo!NaYo.NaYo?Ayo!Ayo!NaYo?NaYo.NaYo?Ayo,Ayo!Ayo!NaYo?NaYo?NaYo?Ayo!NaYo?Ayo!Ayo!Ayo!NaYo?Ayo!Ayo!Ayo!Ayo!Ayo!NaYo?Ayo!Ayo!Ayo!Ayo!Ayo,Ayo!NaYo?NaYo.Ayo!Ayo!Ayo!Ayo!NaYo?NaYo?Ayo!NaYo?NaYo?NaYo?Ayo!Ayo!NaYo?NaYo?Ayo!Ayo!Ayo!NaYo?NaYo?Ayo!NaYo?Ayo,NaYo?Ayo,Ayo!NaYo?Ayo!Ayo!Ayo!Ayo!NaYo?Ayo!Ayo!NaYo?Ayo!NaYo?NaYo.NaYo?NaYo?NaYo?NaYo?Ayo!Ayo!Ayo!NaYo?Ayo,NaYo?Ayo!Ayo!Ayo!Ayo!NaYo?NaYo?Ayo!Ayo!Ayo!Ayo!Ayo!Ayo!NaYo?Ayo!NaYo?NaYo?Ayo!NaYo?Ayo!Ayo!Ayo!Ayo!NaYo?Ayo!NaYo?NaYo?Ayo!Ayo!NaYo?NaYo?NaYo?Ayo,NaYo?NaYo?NaYo?Ayo!Ayo!NaYo?Ayo,NaYo?Ayo!NaYo?NaYo?Ayo!Ayo!NaYo?Ayo!NaYo?NaYo?Ayo!Ayo!Ayo!NaYo?NaYo?Ayo!Ayo!NaYo?Ayo!NaYo?NaYo?Ayo!NaYo?Ayo!Ayo!NaYo?NaYo?NaYo?NaYo?Ayo!NaYo?Ayo!Ayo!NaYo?Ayo!Ayo!Ayo!NaYo?Ayo!Ayo!Ayo!NaYo?NaYo?Ayo!Ayo!Ayo,Ayo!Ayo!NaYo?NaYo?NaYo.Ayo!Ayo,Ayo!NaYo?Ayo,Ayo!NaYo?Ayo!NaYo?NaYo?NaYo.NaYo?NaYo.NaYo?Ayo!NaYo?NaYo?Ayo!Ayo,Ayo!Ayo,Ayo!NaYo?NaYo?Ayo!NaYo.Ayo!NaYo?Ayo!NaYo?NaYo?Ayo!NaYo?Ayo!NaYo?Ayo!Ayo,Ayo!NaYo?Ayo!Ayo,Ayo!NaYo?Ayo,NaYo?NaYo?NaYo?Ayo!Ayo!Ayo!NaYo?NaYo?Ayo!Ayo,NaYo?Ayo,Ayo!Ayo!NaYo?Ayo!NaYo?NaYo.Ayo!Ayo!NaYo?Ayo!Ayo!NaYo?NaYo?Ayo!NaYo?Ayo!Ayo!NaYo.Ayo!Ayo!Ayo,Ayo!Ayo!NaYo.NaYo?Ayo,NaYo?Ayo!NaYo.NaYo?Ayo!Ayo!NaYo?NaYo?Ayo!NaYo?NaYo?NaYo?NaYo.NaYo?Ayo!NaYo?NaYo?Ayo!NaYo?Ayo!Ayo!Ayo!' 
+str1 = 'Ayo,NaYo.Ayo!NaYo+Ayo!NaYo.Ayo!NaYo.NaYo?NaYo+NaYo.NaYo+Ayo,NaYo.Ayo,Ayo,NaYo.Ayo,Ayo,NaYo.Ayo,Ayo,NaYo?NaYo.NaYo?Ayo,NaYo?Ayo,NaYo.NaYo+Ayo!NaYo?NaYo.Ayo,Ayo,Ayo!NaYo+NaYo.NaYo.NaYo?NaYo?Ayo,NaYo.Ayo!Ayo,NaYo.Ayo!Ayo,Ayo,NaYo.NaYo.Ayo!NaYo+Ayo!NaYo+Ayo,NaYo.NaYo.Ayo!Ayo-NaYo.NaYo?NaYo?Ayo!NaYo.Ayo!NaYo?Ayo,Ayo!NaYo?Ayo,NaYo.Ayo!NaYo.NaYo.Ayo!Ayo!NaYo.NaYo?Ayo-Ayo!Ayo!NaYo.Ayo,NaYo.Ayo,NaYo.Ayo-Ayo!Ayo,NaYo.Ayo!NaYo.NaYo.NaYo.NaYo?Ayo!NaYo+NaYo?Ayo,NaYo.NaYo+Ayo!NaYo.NaYo.Ayo!Ayo!NaYo+Ayo!NaYo.Ayo,NaYo?NaYo?Ayo,NaYo.Ayo!Ayo!NaYo.NaYo+NaYo.NaYo+Ayo,Ayo!NaYo.NaYo+Ayo!Ayo!Ayo,Ayo,NaYo.Ayo!Ayo!NaYo.Ayo!NaYo?NaYo?NaYo.Ayo!Ayo!Ayo,' 
 # str2 ='vivo 50 查看原文'
-str2 = 'NaYo?Ayo!Ayo,Ayo!Ayo!NaYo?Ayo!Ayo!NaYo?Ayo,NaYo?NaYo.Ayo!Ayo!NaYo.NaYo?Ayo!NaYo?NaYo.NaYo?Ayo!NaYo?Ayo!Ayo!Ayo!NaYo?Ayo!Ayo!NaYo.NaYo?NaYo?NaYo.Ayo!Ayo!NaYo?Ayo!Ayo!Ayo!Ayo!NaYo.NaYo?NaYo.NaYo?Ayo!NaYo?NaYo.NaYo?NaYo?NaYo?NaYo?NaYo?NaYo?Ayo!NaYo.Ayo!Ayo,NaYo?Ayo!NaYo?Ayo!NaYo?NaYo?Ayo!Ayo!Ayo,NaYo?Ayo,NaYo?NaYo?NaYo?Ayo,NaYo?NaYo?NaYo.Ayo!NaYo.NaYo?NaYo?NaYo?NaYo.NaYo?NaYo?Ayo!NaYo.Ayo!Ayo!NaYo?NaYo?Ayo!NaYo.Ayo!NaYo?Ayo!Ayo,NaYo?NaYo.NaYo?Ayo!Ayo!Ayo!Ayo,Ayo!Ayo!Ayo!NaYo?Ayo!NaYo?NaYo?Ayo!NaYo?Ayo!Ayo,Ayo!NaYo.Ayo!Ayo!NaYo?NaYo?Ayo!Ayo!Ayo,Ayo!NaYo.Ayo!NaYo.NaYo?Ayo,NaYo?Ayo!Ayo,Ayo!Ayo!Ayo,NaYo?NaYo?Ayo,Ayo!NaYo.NaYo?NaYo?NaYo?Ayo!NaYo?Ayo!Ayo,Ayo!Ayo!Ayo!Ayo,Ayo!NaYo?NaYo?NaYo.Ayo!NaYo?Ayo!Ayo!NaYo?NaYo?NaYo?Ayo!Ayo!NaYo.Ayo!NaYo?Ayo!NaYo?NaYo.NaYo?Ayo!NaYo.Ayo!Ayo!Ayo!Ayo!Ayo!Ayo!Ayo!NaYo?NaYo?Ayo!NaYo.Ayo!NaYo.NaYo?Ayo!NaYo?NaYo?Ayo!Ayo,NaYo?Ayo!Ayo!Ayo,NaYo?NaYo.Ayo!NaYo.NaYo?NaYo?Ayo,NaYo?NaYo?Ayo,Ayo!Ayo!Ayo!Ayo,'
+str2 = 'Ayo!Ayo,Ayo!NaYo.Ayo!NaYo.Ayo-NaYo.Ayo!Ayo-Ayo!Ayo,Ayo!NaYo.Ayo-Ayo!NaYo.Ayo,NaYo+Ayo,NaYo?NaYo.NaYo?NaYo?NaYo?Ayo,Ayo!Ayo!Ayo-NaYo?Ayo,NaYo+NaYo?NaYo?NaYo?NaYo.NaYo?NaYo?Ayo,NaYo.Ayo!NaYo.Ayo-NaYo.Ayo!Ayo,Ayo,Ayo-NaYo.NaYo.Ayo!Ayo!Ayo,NaYo.Ayo!Ayo,NaYo.Ayo!Ayo-Ayo,NaYo?NaYo.NaYo+NaYo?NaYo.Ayo-Ayo,Ayo,NaYo.Ayo!Ayo!NaYo.NaYo?Ayo,NaYo.NaYo.Ayo!Ayo,Ayo,Ayo,NaYo.NaYo+Ayo!NaYo.NaYo.Ayo!Ayo!NaYo.NaYo.NaYo?Ayo!Ayo,'
 # str3 = 'So.请输入^_^:'
-str3 = 'NaYo?Ayo!NaYo?NaYo.Ayo!NaYo?NaYo?Ayo!Ayo!NaYo?Ayo!Ayo!NaYo?NaYo.Ayo!Ayo!Ayo!Ayo,Ayo!NaYo?NaYo.NaYo?Ayo!NaYo?Ayo,Ayo!Ayo!NaYo.Ayo!NaYo?NaYo.Ayo!Ayo!Ayo!NaYo?Ayo!NaYo?Ayo,NaYo?NaYo?NaYo.Ayo!NaYo?Ayo!Ayo,NaYo?NaYo.Ayo!Ayo!Ayo!Ayo!Ayo,Ayo!Ayo,NaYo?Ayo!Ayo!NaYo?Ayo!NaYo.Ayo!Ayo!Ayo!Ayo!Ayo!NaYo?Ayo!NaYo?NaYo.NaYo?NaYo?Ayo!NaYo?Ayo!Ayo!Ayo,Ayo!Ayo!Ayo!NaYo?Ayo!NaYo?NaYo?Ayo!NaYo?NaYo?NaYo.Ayo!Ayo!Ayo!Ayo!Ayo!NaYo?NaYo?Ayo!NaYo?Ayo,Ayo!Ayo!NaYo?NaYo.NaYo?NaYo?NaYo?Ayo!NaYo.NaYo?Ayo!Ayo!NaYo?Ayo!NaYo?NaYo?Ayo!Ayo,NaYo?Ayo!NaYo?NaYo.Ayo!NaYo?Ayo,Ayo!Ayo!Ayo!NaYo.Ayo!NaYo?NaYo.NaYo?Ayo!NaYo?Ayo!Ayo,Ayo!Ayo!Ayo!NaYo.Ayo!NaYo.NaYo?Ayo,Ayo!NaYo?Ayo,Ayo!Ayo!Ayo!Ayo!NaYo.NaYo?NaYo.NaYo?NaYo?Ayo!Ayo!Ayo!NaYo?Ayo!NaYo.NaYo?'
+str3 = 'Ayo!Ayo!NaYo?Ayo,Ayo!NaYo.Ayo,Ayo,NaYo?NaYo.Ayo,NaYo.Ayo,NaYo.NaYo.NaYo?NaYo.NaYo.Ayo-Ayo,Ayo,NaYo.NaYo+Ayo,Ayo!Ayo,Ayo,NaYo.NaYo.NaYo?NaYo.Ayo,Ayo,Ayo-NaYo.NaYo.Ayo!NaYo?Ayo,Ayo,NaYo.Ayo!Ayo!NaYo.NaYo?Ayo!Ayo!NaYo.NaYo.Ayo!Ayo!Ayo!Ayo!Ayo,NaYo.Ayo!Ayo!Ayo,NaYo+Ayo,Ayo!Ayo!Ayo,Ayo-NaYo.NaYo?Ayo,NaYo.NaYo.'
 # str4 = 'Wait, what the fuck is this?（。皿。メ）'
-str4 = 'NaYo?Ayo!NaYo.NaYo?NaYo.Ayo!NaYo?Ayo!NaYo.Ayo!Ayo,Ayo!NaYo.NaYo?Ayo!Ayo!NaYo?NaYo?NaYo.NaYo?NaYo.NaYo?Ayo!NaYo?Ayo!Ayo!NaYo?Ayo!NaYo.NaYo?NaYo?Ayo!NaYo?Ayo!NaYo.Ayo!NaYo.Ayo!NaYo?NaYo.Ayo!NaYo?NaYo.NaYo?NaYo?NaYo.NaYo?Ayo!NaYo.NaYo?Ayo!Ayo!NaYo?Ayo,NaYo?NaYo.NaYo?NaYo.NaYo?Ayo!NaYo?NaYo?Ayo,NaYo?NaYo?NaYo?NaYo?Ayo!Ayo!Ayo!Ayo,NaYo?Ayo!Ayo!Ayo!Ayo,NaYo?Ayo!Ayo!NaYo?Ayo,Ayo!Ayo,NaYo?Ayo,NaYo?NaYo?NaYo?Ayo!Ayo!NaYo?NaYo?Ayo,NaYo?NaYo?Ayo!Ayo,NaYo?Ayo!Ayo!Ayo!NaYo?Ayo!NaYo.NaYo?Ayo,NaYo?Ayo,NaYo?NaYo?Ayo!NaYo?NaYo.NaYo?NaYo?Ayo,NaYo?NaYo?NaYo?Ayo!Ayo,Ayo!Ayo!NaYo?NaYo.Ayo!NaYo?NaYo.NaYo?NaYo?NaYo.Ayo!Ayo!NaYo?Ayo!NaYo?NaYo?NaYo.NaYo?NaYo?Ayo!Ayo!NaYo.NaYo?Ayo,NaYo?NaYo.Ayo!NaYo?Ayo,Ayo!Ayo,NaYo?NaYo?Ayo,Ayo!NaYo?NaYo?NaYo?NaYo?NaYo.NaYo?NaYo?Ayo!Ayo,Ayo!NaYo?NaYo?Ayo!Ayo!NaYo?NaYo?Ayo!Ayo!Ayo!NaYo.NaYo?Ayo!NaYo?Ayo!NaYo?Ayo!Ayo,Ayo!Ayo,NaYo?NaYo?NaYo?Ayo,Ayo!Ayo!NaYo?Ayo,Ayo!NaYo.Ayo!NaYo?Ayo!NaYo?Ayo!NaYo.Ayo!Ayo,NaYo?Ayo,NaYo?Ayo,Ayo!NaYo?NaYo?Ayo,NaYo?NaYo?NaYo.NaYo?NaYo?Ayo!Ayo,Ayo!NaYo?NaYo.Ayo!NaYo?NaYo?Ayo,Ayo!NaYo?Ayo!NaYo.Ayo!Ayo!NaYo.NaYo?NaYo?NaYo.Ayo!Ayo,Ayo!NaYo?NaYo?Ayo!NaYo?NaYo?NaYo?NaYo?NaYo.NaYo?NaYo?Ayo!Ayo!Ayo!NaYo?Ayo!NaYo?NaYo?NaYo?NaYo.Ayo!Ayo!NaYo?Ayo,Ayo!NaYo?NaYo?NaYo?NaYo?Ayo!Ayo!NaYo?Ayo!Ayo,NaYo?Ayo,NaYo?Ayo!NaYo?Ayo!NaYo.Ayo!Ayo!NaYo?NaYo?NaYo.Ayo!Ayo!NaYo?NaYo?Ayo!Ayo!Ayo,Ayo!Ayo!Ayo!Ayo!Ayo!Ayo,Ayo!Ayo!NaYo?Ayo!NaYo.Ayo!Ayo!Ayo,Ayo!Ayo!NaYo?Ayo!NaYo.Ayo!Ayo!Ayo!Ayo,NaYo?NaYo?Ayo!Ayo,NaYo?NaYo?NaYo?NaYo.Ayo!NaYo?NaYo?NaYo?NaYo.Ayo!Ayo!Ayo!NaYo?NaYo?NaYo?Ayo!Ayo!Ayo!NaYo.NaYo?NaYo.NaYo?Ayo,NaYo?NaYo?NaYo.NaYo?NaYo?NaYo?Ayo!Ayo,NaYo?Ayo,NaYo?NaYo?Ayo,NaYo?NaYo.NaYo?Ayo!Ayo,NaYo?Ayo!NaYo.Ayo!NaYo.Ayo!NaYo?NaYo?Ayo!Ayo!Ayo!Ayo,Ayo!Ayo,NaYo?Ayo,NaYo?Ayo!Ayo!Ayo,NaYo?Ayo!NaYo.NaYo?Ayo!NaYo?Ayo!Ayo!Ayo!Ayo!Ayo!Ayo!Ayo!Ayo!NaYo.Ayo!NaYo?Ayo,NaYo?NaYo.NaYo?Ayo!Ayo!NaYo.Ayo!Ayo,NaYo?NaYo?NaYo?NaYo?NaYo?NaYo?NaYo?Ayo,Ayo!NaYo?NaYo?NaYo?NaYo?Ayo,NaYo?Ayo,Ayo!NaYo?Ayo!Ayo!Ayo!NaYo?NaYo?NaYo?Ayo!Ayo!Ayo!NaYo?NaYo?NaYo?NaYo?NaYo?Ayo!Ayo!Ayo!NaYo?NaYo.Ayo!NaYo?NaYo?Ayo,NaYo?NaYo?NaYo.Ayo!Ayo!NaYo.Ayo!Ayo!NaYo?Ayo!Ayo!Ayo!Ayo,Ayo!Ayo!NaYo?NaYo.Ayo!Ayo,Ayo!Ayo!Ayo!NaYo?NaYo.NaYo?NaYo.Ayo!Ayo,NaYo?NaYo?NaYo?Ayo!NaYo?NaYo?Ayo!'
+str4 = 'Ayo!Ayo!Ayo!Ayo,NaYo+Ayo!NaYo.NaYo?Ayo!Ayo!NaYo.NaYo.Ayo!Ayo!Ayo,Ayo!NaYo?NaYo?NaYo.Ayo,NaYo?NaYo?NaYo.NaYo?NaYo+NaYo?Ayo!Ayo,Ayo!Ayo,NaYo+Ayo!NaYo.NaYo.NaYo?Ayo-Ayo!NaYo.NaYo?Ayo!Ayo!Ayo,NaYo+Ayo!NaYo?NaYo?NaYo.Ayo-NaYo?NaYo?Ayo!Ayo,Ayo!NaYo?Ayo!NaYo+NaYo.NaYo.NaYo?Ayo!NaYo.Ayo-Ayo!Ayo!NaYo+NaYo?NaYo+NaYo.NaYo?NaYo?Ayo!NaYo.NaYo+Ayo!NaYo.NaYo+Ayo!Ayo,Ayo!Ayo-Ayo!Ayo!NaYo.NaYo?Ayo,Ayo!NaYo.NaYo.Ayo,NaYo?NaYo.NaYo?NaYo?Ayo!NaYo.NaYo.Ayo!Ayo!Ayo,NaYo?Ayo,NaYo?NaYo.NaYo?NaYo?Ayo!Ayo,Ayo!NaYo?Ayo!NaYo.NaYo.Ayo-NaYo?NaYo+Ayo!NaYo.Ayo-NaYo.NaYo+Ayo!Ayo!Ayo-Ayo,NaYo?Ayo-Ayo,NaYo?Ayo,Ayo,Ayo,NaYo+Ayo,NaYo.Ayo,Ayo,NaYo.Ayo,Ayo,NaYo?NaYo.Ayo-NaYo?NaYo.NaYo?Ayo,Ayo-NaYo.NaYo?Ayo,NaYo+NaYo.NaYo?NaYo?NaYo+NaYo?NaYo.Ayo-NaYo?NaYo?NaYo+NaYo.Ayo,NaYo.Ayo!Ayo,NaYo.Ayo!NaYo.NaYo.NaYo.Ayo,Ayo,Ayo,NaYo+Ayo,NaYo.NaYo?Ayo,NaYo.NaYo?NaYo?NaYo?NaYo.NaYo?NaYo?Ayo-NaYo.Ayo,NaYo.NaYo?Ayo,NaYo.NaYo?NaYo?Ayo,Ayo-NaYo.NaYo.NaYo?Ayo!Ayo,NaYo.NaYo+Ayo,Ayo,NaYo.Ayo,Ayo,Ayo-NaYo?NaYo.NaYo?NaYo.Ayo!'
 # str5 ='50'
-str5 = 'NaYo?NaYo?NaYo.Ayo!Ayo!NaYo?Ayo!NaYo.NaYo?NaYo.Ayo!NaYo?NaYo.NaYo?Ayo!Ayo!NaYo?NaYo?NaYo.NaYo?NaYo?'
+str5 = 'NaYo?Ayo,Ayo-Ayo!Ayo!Ayo-NaYo?Ayo,NaYo?NaYo?'
 # str6 ='17'
-str6 = 'NaYo?NaYo?Ayo,Ayo!Ayo!NaYo?NaYo?NaYo.NaYo?Ayo,Ayo!NaYo?Ayo,NaYo?Ayo!Ayo!NaYo.NaYo?Ayo!Ayo!Ayo!NaYo.'
+str6 = 'NaYo?Ayo,NaYo?Ayo!NaYo?Ayo,Ayo!Ayo,'
 # str7 ='hint:Double Digit'
-str7 = 'NaYo?Ayo!Ayo!Ayo,NaYo?Ayo!NaYo.NaYo?NaYo?NaYo?NaYo?Ayo,Ayo!Ayo!NaYo?Ayo!NaYo?NaYo?Ayo!NaYo?Ayo!Ayo!NaYo?Ayo,Ayo!Ayo!Ayo!NaYo.NaYo?NaYo?Ayo!Ayo!Ayo!NaYo?Ayo!NaYo?Ayo,NaYo?NaYo?NaYo?Ayo,Ayo!NaYo.Ayo!Ayo!NaYo?Ayo!NaYo?NaYo?Ayo!NaYo?NaYo?NaYo?Ayo!NaYo?NaYo?NaYo?Ayo!Ayo!NaYo?NaYo.Ayo!Ayo!Ayo,Ayo!Ayo!NaYo?Ayo!Ayo!Ayo!NaYo?Ayo!NaYo?Ayo!Ayo,NaYo?Ayo!Ayo!NaYo?NaYo.NaYo?NaYo?NaYo.Ayo!NaYo?NaYo?Ayo,Ayo!Ayo,Ayo!NaYo?Ayo!Ayo!NaYo.NaYo?NaYo?NaYo.NaYo?Ayo!NaYo.Ayo!NaYo?NaYo?Ayo!NaYo?Ayo!NaYo?NaYo?Ayo!NaYo?NaYo?NaYo?NaYo?NaYo.NaYo?NaYo?Ayo!NaYo?Ayo,NaYo?NaYo?Ayo!NaYo?NaYo?NaYo?Ayo!Ayo!NaYo?Ayo!NaYo?NaYo?Ayo!NaYo?Ayo!Ayo!NaYo?NaYo?Ayo!Ayo!Ayo!NaYo?Ayo!Ayo!NaYo?Ayo!NaYo?NaYo?Ayo!NaYo?Ayo!Ayo!Ayo!NaYo.NaYo?Ayo!NaYo?NaYo?'
+str7 = 'Ayo!NaYo.NaYo.NaYo?Ayo!NaYo.NaYo+NaYo.Ayo!Ayo!NaYo.Ayo,NaYo.Ayo!Ayo,Ayo!NaYo?NaYo?Ayo,NaYo.NaYo.Ayo!NaYo?Ayo!NaYo?Ayo!NaYo.Ayo,Ayo,Ayo!NaYo+Ayo,NaYo+Ayo!Ayo!Ayo!NaYo.NaYo?NaYo.NaYo+Ayo!NaYo.NaYo+Ayo,Ayo-NaYo?Ayo!NaYo.Ayo!Ayo!NaYo?NaYo.NaYo?NaYo?NaYo+Ayo!NaYo?Ayo!NaYo?Ayo!NaYo.NaYo.NaYo+Ayo!NaYo+Ayo!NaYo.Ayo!Ayo,NaYo+Ayo!NaYo.NaYo.Ayo!Ayo!Ayo,Ayo!NaYo?'
 
 #闪烁
 def flash(time_interval=0.4,interval=10):
     colors = [Fore.LIGHTRED_EX,Fore.LIGHTGREEN_EX,Fore.LIGHTYELLOW_EX,Fore.LIGHTBLUE_EX,Fore.LIGHTMAGENTA_EX,Fore.LIGHTCYAN_EX,Fore.LIGHTWHITE_EX]
     color = random.choice(colors)
     for i in range(50):  
-            print(color+'.', end='', flush=True)  #flush=True确保立即打印  
+            print(color+'.', end='', flush=True)  #flush=True打印  
             if (i + 1) % interval == 0:  
                 time.sleep(time_interval)
 
@@ -153,7 +157,7 @@ def magic():
     flash()
     print("NaYo语和人语的切换器")
     while(True):
-        print("1:加密模式"+"\n"+"2:解密模式"+"\n"+"3:退出")
+        print("1:加密模式"+"\n"+"2:解密模式"+"\n"+"3:彩蛋"+"\n"+"4:退出")
         mode = input()
         if mode=='1':
             print("输入想转NaYo语的文本：",end='')
@@ -164,7 +168,9 @@ def magic():
             strs = input()
             #空字符串异常抛出
             print("\n"+"原文："+Fore.LIGHTRED_EX+Tokyo_decode(strs)+"\n"+50*'.')
-        elif mode=='3':
+        elif mode == '3':
+            cadeaux()
+        elif mode=='4':
             sys.exit()
         else:print(color+"\n"+"Are you Sure o_O?"+"\n"+50*'.')
         time.sleep(0.5)
